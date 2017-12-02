@@ -20,23 +20,17 @@ my $sth = $dbh->prepare($query);
 
 $sth->execute or die $sth->errstr;
 
+my $row = 0;
+my $col = 0;
 
-# Create a new Excel workbook
-my $workbook = Excel::Writer::XLSX->new( '/tmp/perl.xlsx' );
-
-# Add a worksheet
+my $workbook = Excel::Writer::XLSX->new( '/tmp/resultado.xlsx' );
 $worksheet = $workbook->add_worksheet();
 
-#  Add and define a format
-$format = $workbook->add_format();
-$format->set_bold();
-$format->set_color( 'red' );
-$format->set_align( 'center' );
-
-# Write a formatted and unformatted string, row and column notation.
-$col = $row = 0;
-$worksheet->write( $row, $col, 'Hi Excel!', $format );
-$worksheet->write( 1, $col, $query );
+$worksheet->write_row($row++,$col,['Col 1', 'Col 2', 'Col 3', 'Col 4', 'Col 5', 'Col 6', 'Col 7', 'Col 8', 'Col 9', 'Col 10', 'Col 11', 'Col 12']);
+while(my @data = $sth->fetchrow_array)
+{
+  $worksheet->write_row($row++,$col,\@data);
+}
 
 $sth->finish;
 $dbh->disconnect;
