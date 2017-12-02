@@ -1,7 +1,12 @@
+#!/usr/bin/perl -w
+
+use DBI;
 use Excel::Writer::XLSX;
 
+my $query = $ARGV[0];
+
 # Create a new Excel workbook
-my $workbook = Excel::Writer::XLSX->new( 'perl.xlsx' );
+my $workbook = Excel::Writer::XLSX->new( '/tmp/perl.xlsx' );
 
 # Add a worksheet
 $worksheet = $workbook->add_worksheet();
@@ -15,8 +20,4 @@ $format->set_align( 'center' );
 # Write a formatted and unformatted string, row and column notation.
 $col = $row = 0;
 $worksheet->write( $row, $col, 'Hi Excel!', $format );
-$worksheet->write( 1, $col, 'Hi Excel!' );
-
-# Write a number and a formula using A1 notation
-$worksheet->write( 'A3', 1.2345 );
-$worksheet->write( 'A4', '=SIN(PI()/4)' );
+$worksheet->write( 1, $col, $query );
