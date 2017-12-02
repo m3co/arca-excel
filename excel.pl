@@ -2,13 +2,18 @@
 
 use DBI;
 use Excel::Writer::XLSX;
+use Config::Simple;
 
 my $query = $ARGV[0];
-my $dbname = '';
-my $host = 'localhost';
-my $port = '5432';
-my $username = '';
-my $password = '';
+
+$cfg = new Config::Simple();
+$cfg->read('db.ini');
+
+my $dbname = $cfg->param("Pg.dbname");
+my $host = $cfg->param("Pg.host");
+my $port = $cfg->param("Pg.port");
+my $username = $cfg->param("Pg.username");
+my $password = $cfg->param("Pg.password");
 
 my $dbh = DBI->connect("dbi:Pg:dbname=$dbname;host=$host;port=$port",
   $username,
