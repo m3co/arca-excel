@@ -4,6 +4,22 @@ use DBI;
 use Excel::Writer::XLSX;
 
 my $query = $ARGV[0];
+my $dbname = '';
+my $host = 'localhost';
+my $port = '5432';
+my $username = '';
+my $password = '';
+
+my $dbh = DBI->connect("dbi:Pg:dbname=$dbname;host=$host;port=$port",
+  $username,
+  $password,
+  {AutoCommit => 0, RaiseError => 1, PrintError => 0}
+);
+
+my $sth = $dbh->prepare($query);
+
+$sth->execute or die $sth->errstr;
+
 
 # Create a new Excel workbook
 my $workbook = Excel::Writer::XLSX->new( '/tmp/perl.xlsx' );
@@ -21,3 +37,6 @@ $format->set_align( 'center' );
 $col = $row = 0;
 $worksheet->write( $row, $col, 'Hi Excel!', $format );
 $worksheet->write( 1, $col, $query );
+
+$sth->finish;
+$dbh->disconnect;
