@@ -7,7 +7,7 @@ use Config::Simple;
 my $query = $ARGV[0];
 
 $cfg = new Config::Simple();
-$cfg->read('db.ini');
+$cfg->read('excel/db.ini'); #revisar como hacer esta direccion relativa
 
 my $dbname = $cfg->param("Pg.dbname");
 my $host = $cfg->param("Pg.host");
