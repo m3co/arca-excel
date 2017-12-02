@@ -19,6 +19,7 @@ my $dbh = DBI->connect("dbi:Pg:dbname=$dbname;host=$host;port=$port",
 my $sth = $dbh->prepare($query);
 
 $sth->execute or die $sth->errstr;
+my $fields = $sth->{NAME};
 
 my $row = 0;
 my $col = 0;
@@ -26,7 +27,7 @@ my $col = 0;
 my $workbook = Excel::Writer::XLSX->new( '/tmp/resultado.xlsx' );
 $worksheet = $workbook->add_worksheet();
 
-$worksheet->write_row($row++,$col,['Col 1', 'Col 2', 'Col 3', 'Col 4', 'Col 5', 'Col 6', 'Col 7', 'Col 8', 'Col 9', 'Col 10', 'Col 11', 'Col 12']);
+$worksheet->write_row($row++,$col,$fields);
 while(my @data = $sth->fetchrow_array)
 {
   $worksheet->write_row($row++,$col,\@data);
