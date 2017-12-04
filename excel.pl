@@ -4,7 +4,8 @@ use DBI;
 use Excel::Writer::XLSX;
 use Config::Simple;
 
-my $query = $ARGV[0];
+my $filepath = $ARGV[0];
+my $query = $ARGV[1];
 
 $cfg = new Config::Simple();
 $cfg->read('excel/db.ini'); #revisar como hacer esta direccion relativa
@@ -29,7 +30,7 @@ my $fields = $sth->{NAME};
 my $row = 0;
 my $col = 0;
 
-my $workbook = Excel::Writer::XLSX->new( '/tmp/resultado.xlsx' );
+my $workbook = Excel::Writer::XLSX->new($filepath);
 $worksheet = $workbook->add_worksheet();
 
 $worksheet->write_row($row++,$col,$fields);
