@@ -5,7 +5,6 @@ use Excel::Writer::XLSX;
 use Config::Simple;
 
 my $filepath = $ARGV[0];
-my $query = $ARGV[1];
 
 $cfg = new Config::Simple();
 $cfg->read('excel/db.ini'); #revisar como hacer esta direccion relativa
@@ -22,22 +21,27 @@ my $dbh = DBI->connect("dbi:Pg:dbname=$dbname;host=$host;port=$port",
   {AutoCommit => 0, RaiseError => 1, PrintError => 0}
 );
 
-my $sth = $dbh->prepare($query);
-
-$sth->execute or die $sth->errstr;
-my $fields = $sth->{NAME};
-
-my $row = 0;
-my $col = 0;
-
 my $workbook = Excel::Writer::XLSX->new($filepath);
-$worksheet = $workbook->add_worksheet();
+my $numArgs = $#ARGV + 1;
+foreach $argnum (1 .. $#ARGV) {
+  my $query = $ARGV[$argnum];
+  my $sth = $dbh->prepare($query);
 
-$worksheet->write_row($row++,$col,$fields);
-while(my @data = $sth->fetchrow_array)
-{
-  $worksheet->write_row($row++,$col,\@data);
+  $sth->execute or die $sth->errstr;
+  my $fields = $sth->{NAME};
+
+  my $row = 0;
+  my $col = 0;
+
+  $worksheet = $workbook->add_worksheet();
+
+  $worksheet->write_row($row++,$col,$fields);
+  while(my @data = $sth->fetchrow_array)
+  {
+    $worksheet->write_row($row++,$col,\@data);
+  }
+
+  $sth->finish;
 }
 
-$sth->finish;
 $dbh->disconnect;
